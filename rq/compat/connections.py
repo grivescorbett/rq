@@ -27,6 +27,7 @@ def patch_connection(connection):
     if all([hasattr(connection, attr) for attr in PATCHED_METHODS]):
         return connection
 
+    # assume strictredis
     if isinstance(connection, Redis):
         connection._setex = partial(StrictRedis.setex, connection)
         connection._lrem = partial(StrictRedis.lrem, connection)
@@ -35,7 +36,7 @@ def patch_connection(connection):
         connection._ttl = fix_return_type(partial(StrictRedis.ttl, connection))
         if hasattr(connection, 'pttl'):
             connection._pttl = fix_return_type(partial(StrictRedis.pttl, connection))
-    elif isinstance(connection, StrictRedis):
+    else:
         connection._setex = connection.setex
         connection._lrem = connection.lrem
         connection._zadd = connection.zadd
@@ -43,7 +44,7 @@ def patch_connection(connection):
         connection._ttl = connection.ttl
         if hasattr(connection, 'pttl'):
             connection._pttl = connection.pttl
-    else:
-        raise ValueError('Unanticipated connection type: {}. Please report this.'.format(type(connection)))
+    # else:
+    #     raise ValueError('Unanticipated connection type: {}. Please report this.'.format(type(connection)))
 
     return connection
