@@ -19,8 +19,8 @@ def fix_return_type(func):
 
 
 def patch_connection(connection):
-    if not isinstance(connection, StrictRedis):
-        raise ValueError('A StrictRedis or Redis connection is required.')
+    # if not isinstance(connection, StrictRedis):
+    #     raise ValueError('A StrictRedis or Redis connection is required.')
 
     # Don't patch already patches objects
     PATCHED_METHODS = ['_setex', '_lrem', '_zadd', '_pipeline', '_ttl']
